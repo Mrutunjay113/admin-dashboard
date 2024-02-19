@@ -1,3 +1,24 @@
+import styles from "../ui/dashboard/dashboard.module.css";
+import Card from "../ui/dashboard/card/card";
+import Rightbar from "../ui/dashboard/rightbar/rightbar";
+import Transactions from "../ui/dashboard/transactions/transactions";
+import Chart from "../ui/dashboard/chart/chart";
+
 export default function page() {
-  return <main>Dashboard</main>;
+  return (
+    <main className={styles.wrapper}>
+      <div className={styles.main}>
+        <div className={styles.cards}>
+          <Card />
+          <Card />
+          <Card />
+        </div>
+        <Transactions />
+        <Chart />
+      </div>
+      <div className={styles.side}>
+        <Rightbar />
+      </div>
+    </main>
+  );
 }
