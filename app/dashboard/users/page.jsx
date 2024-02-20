@@ -1,9 +1,13 @@
+import { fetchUsers } from "@/app/lib/data";
 import Pagination from "@/app/ui/dashboard/pagination/pagination";
 import Search from "@/app/ui/dashboard/search/search";
 import styles from "@/app/ui/dashboard/users/user.module.css";
 import Image from "next/image";
 import Link from "next/link";
-export default function page() {
+export default async function page() {
+  const users = await fetchUsers();
+  console.log(users);
+
   return (
     <main className={styles.container}>
       <div className={styles.top}>
@@ -43,7 +47,7 @@ export default function page() {
             <td>active</td>
             <td>
               <div className={styles.buttons}>
-                <Link href="/">
+                <Link href="/dashboard/users/test">
                   <button className={`${styles.button} ${styles.view}`}>
                     View
                   </button>
