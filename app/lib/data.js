@@ -1,7 +1,7 @@
 // export const fetchUsers = async (q, page) => {
 //   const regex = new RegExp(q, "i");
 
-import { User } from "./model";
+import { Product, User } from "./model";
 import ConnectMongoDb from "./utils";
 
 //   const ITEM_PER_PAGE = 2;
@@ -20,11 +20,32 @@ import ConnectMongoDb from "./utils";
 // };
 
 ConnectMongoDb();
-export const fetchUsers = async (q) => {
+export const fetchUsers = async (q, page) => {
   const regex = new RegExp(q, "i");
+  const ITEM_PER_PAGE = 5;
+
   try {
-    const users = await User.find({ username: { $regex: regex } });
-    return users;
+    const count = await User.find({ username: { $regex: regex } }).count();
+    const users = await User.find({ username: { $regex: regex } })
+      .limit(ITEM_PER_PAGE)
+      .skip(ITEM_PER_PAGE * (page - 1));
+    return { users, count };
+  } catch (err) {
+    console.log(err);
+  }
+};
+export const fetchProducts = async (q, page) => {
+  console.log(q);
+  console.log(page);
+  const regex = new RegExp(q, "i");
+  const ITEM_PER_PAGE = 5;
+
+  try {
+    const count = await Product.find({ title: { $regex: regex } }).count();
+    const products = await Product.find({ title: { $regex: regex } })
+      .limit(ITEM_PER_PAGE)
+      .skip(ITEM_PER_PAGE * (page - 1));
+    return { products, count };
   } catch (err) {
     console.log(err);
   }

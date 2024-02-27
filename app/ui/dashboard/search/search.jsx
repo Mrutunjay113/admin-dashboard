@@ -17,6 +17,7 @@ const Search = ({ placeholder }) => {
   const handleSearch = (e) => {
     const search = e.target.value;
     const params = new URLSearchParams(searchParams);
+    params.set("page", 1);
     if (search) {
       search.length > 2 && params.set("q", search);
       replace(`${pathname}?${params.toString()}`);

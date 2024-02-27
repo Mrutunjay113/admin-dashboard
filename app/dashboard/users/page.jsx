@@ -6,7 +6,9 @@ import Image from "next/image";
 import Link from "next/link";
 export default async function page({ searchParams }) {
   const q = searchParams.q || "";
-  const users = await fetchUsers(q);
+  const page = searchParams.page || 1;
+  const { users, count } = await fetchUsers(q, page);
+
   console.log(q);
 
   return (
@@ -63,7 +65,7 @@ export default async function page({ searchParams }) {
           ))}
         </tbody>
       </table>
-      <Pagination />
+      <Pagination count={count} />
     </main>
   );
 }
