@@ -1,8 +1,9 @@
+import { addUser } from "@/app/lib/actions";
 import styles from "@/app/ui/dashboard/users/addUser/addUser.module.css";
 export default function page() {
   return (
     <main className={styles.container}>
-      <form className={styles.form} action="">
+      <form className={styles.form} action={addUser}>
         <input
           type="text"
           className={styles.input}

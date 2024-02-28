@@ -1,43 +1,48 @@
+import { updateUser } from "@/app/lib/actions";
+import { fetchUser, fetchUsers } from "@/app/lib/data";
 import styles from "@/app/ui/dashboard/users/singleUser/singleUser.module.css";
 import Image from "next/image";
 
-export default function page() {
+export default async function page({ params }) {
+  const { id } = params;
+  const user = await fetchUser(id);
   return (
     <main className={styles.container}>
       <div className={styles.infoContainer}>
         <div className={styles.imgContainer}>
-          <Image src="/noavatar.png" alt="user" fill />
+          <Image src={user?.img || "/noavatar.png"} alt="user" fill />
         </div>
-        John Doe
+        {user?.username}
       </div>
       <div className={styles.formContainer}>
-        <form className={styles.form} action="">
+        <form className={styles?.form} action={updateUser}>
+          <input type="hidden" name="id" value={user.id} />
           <label>Username</label>
           <input
             type="text"
             name="username"
             className={styles.input}
-            placeholder="john"
+            placeholder={user.username}
           />
           <label>Email</label>
           <input
             type="email"
             name="email"
             className={styles.input}
-            placeholder="Email@ john.com"
+            placeholder={user.email}
           />
           <label>Password</label>
           <input
             type="password"
             name="password"
             className={styles.input}
-            placeholder="password"
+            placeholder={user.password}
           />
           <label>Phone</label>
           <input
             type="number"
             className={styles.input}
-            placeholder="1234567890"
+            placeholder={user.phone}
           />
           <label>Address</label>
           <textarea
@@ -45,7 +50,7 @@ export default function page() {
             id="address"
             rows="2"
             className={styles.textarea}
-            placeholder="Address"
+            placeholder={user.address}
             required
           ></textarea>
           <label>Is Admin?</label>
@@ -55,9 +60,12 @@ export default function page() {
             className={styles.select}
             required
           >
-            <option value={false}>Is admin?</option>
-            <option value={true}>Yes</option>
-            <option value={false}>No</option>
+            <option value={true} selected={user.isAdmin}>
+              Yes
+            </option>
+            <option value={false} selected={!user.isAdmin}>
+              No
+            </option>
           </select>
           <label>Is Active?</label>
           <select
@@ -66,9 +74,12 @@ export default function page() {
             className={styles.select}
             required
           >
-            <option value={true}>Is Active?</option>
-            <option value={true}>Yes</option>
-            <option value={false}>No</option>
+            <option value={true} selected={user.isActive}>
+              Yes
+            </option>
+            <option value={false} selected={!user.isActive}>
+              No
+            </option>
           </select>
           <button className={styles.button} type="submit">
             Update

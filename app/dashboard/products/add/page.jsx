@@ -1,8 +1,9 @@
+import { addProduct } from "@/app/lib/actions";
 import styles from "@/app/ui/dashboard/products/addProduct/addProduct.module.css";
 export default function page() {
   return (
     <main className={styles.container}>
-      <form className={styles.form} action="">
+      <form className={styles.form} action={addProduct}>
         <input
           type="text"
           className={styles.input}

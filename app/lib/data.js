@@ -34,6 +34,28 @@ export const fetchUsers = async (q, page) => {
     console.log(err);
   }
 };
+
+export const fetchUser = async (id) => {
+  console.log(id);
+  try {
+    const user = await User.findById(id);
+    return user;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to fetch user!");
+  }
+};
+export const fetchProduct = async (id) => {
+  console.log(id);
+  try {
+    const product = await Product.findById(id);
+    return product;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to fetch product!");
+  }
+};
+
 export const fetchProducts = async (q, page) => {
   console.log(q);
   console.log(page);
