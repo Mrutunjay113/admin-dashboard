@@ -1,21 +1,29 @@
 import NextAuth from "next-auth";
-import CredentialProver from "next-auth/providers/credentials";
-import { User } from "./lib/model";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { authConfig } from "./authconfig";
-import ConnectMongoDb from "./lib/utils";
+
 import bcrypt from "bcrypt";
+import { User } from "./lib/model";
+import ConnectMongoDb from "./lib/utils";
 
 const login = async (credentials) => {
   try {
     ConnectMongoDb();
     const user = await User.findOne({ username: credentials.username });
-    if (!user) throw new Error("User not found!");
-    const isValid = await bcrypt.compare(credentials.password, user.password);
-    if (!isValid) throw new Error("Invalid password!");
+    console.log(user);
+    console.log(credentials.username);
+    if (!user || !user.isAdmin) throw new Error("Wrong credentials!");
+
+    const isPasswordCorrect = await bcrypt.compare(
+      credentials.password,
+      user.password
+    );
+
+    if (!isPasswordCorrect) throw new Error("Wrong credentials!");
 
     return user;
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     throw new Error("Failed to login!");
   }
 };
@@ -23,15 +31,32 @@ const login = async (credentials) => {
 export const { signIn, signOut, auth } = NextAuth({
   ...authConfig,
   providers: [
-    CredentialProver({
+    CredentialsProvider({
       async authorize(credentials) {
         try {
           const user = await login(credentials);
           return user;
-        } catch (error) {
+        } catch (err) {
           return null;
         }
       },
     }),
   ],
+  // ADD ADDITIONAL INFORMATION TO SESSION
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.username = user.username;
+        token.img = user.img;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.username = token.username;
+        session.user.img = token.img;
+      }
+      return session;
+    },
+  },
 });

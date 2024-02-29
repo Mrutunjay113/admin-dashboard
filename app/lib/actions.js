@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import ConnectMongoDb from "./utils";
 import bcrypt from "bcrypt";
+import { signIn } from "../auth";
 
 export const addUser = async (formData) => {
   const { username, email, password, phone, address, isAdmin, isActive } =
@@ -132,5 +133,19 @@ export const deleteUser = async (formData) => {
     throw new Error("Failed to delete User!");
   } finally {
     revalidatePath("/dashboard/users");
+  }
+};
+
+export const authenticate = async (prevState, formData) => {
+  const { username, password } = Object.fromEntries(formData);
+  console.log(username, password);
+
+  try {
+    await signIn("credentials", {
+      username,
+      password,
+    });
+  } catch (error) {
+    return { error: "Wrong credentials!" };
   }
 };
